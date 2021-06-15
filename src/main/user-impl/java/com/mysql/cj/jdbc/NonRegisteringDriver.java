@@ -183,11 +183,16 @@ public class NonRegisteringDriver implements java.sql.Driver {
     public java.sql.Connection connect(String url, Properties info) throws SQLException {
 
         try {
+            /**
+             * url 是否规范 {@link com.mysql.cj.conf.ConnectionUrl.Type}
+              */
             if (!ConnectionUrl.acceptsUrl(url)) {
                 /*
                  * According to JDBC spec:
                  * The driver should return "null" if it realizes it is the wrong kind of driver to connect to the given URL. This will be common, as when the
                  * JDBC driver manager is asked to connect to a given URL it passes the URL to each loaded driver in turn.
+                 * 根据 JDBC 规范：如果驱动程序意识到连接到给定 URL 的驱动程序类型错误，则该驱动程序应返回“null”。
+                 * 这很常见，因为当 JDBC 驱动程序管理器被要求连接到给定的 URL 时，它依次将 URL 传递给每个加载的驱动程序。
                  */
                 return null;
             }

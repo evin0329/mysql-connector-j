@@ -264,6 +264,7 @@ public abstract class ConnectionUrl implements DatabaseUrlContainer {
         if (connString == null) {
             throw ExceptionFactory.createException(WrongArgumentException.class, Messages.getString("ConnectionString.0"));
         }
+        // 拼接配置
         String connStringCacheKey = buildConnectionStringCacheKey(connString, info);
         ConnectionUrl connectionUrl;
 
@@ -300,7 +301,7 @@ public abstract class ConnectionUrl implements DatabaseUrlContainer {
      */
     private static String buildConnectionStringCacheKey(String connString, Properties info) {
         StringBuilder sbKey = new StringBuilder(connString);
-        sbKey.append("\u00A7"); // Section sign.
+        sbKey.append("\u00A7"); // Section sign. 部分标志.
         sbKey.append(
                 info == null ? null : info.stringPropertyNames().stream().map(k -> k + "=" + info.getProperty(k)).collect(Collectors.joining(", ", "{", "}")));
         return sbKey.toString();
