@@ -12,7 +12,7 @@ public class JdbcDemo {
 
         Class.forName("com.mysql.cj.jdbc.Driver");
 
-        Connection connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/dev_gqsh_third_order", "root", "123456");
+        Connection connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/test", "root", "123456");
 
         PreparedStatement preparedStatement = connection.prepareStatement("select 1");
         ResultSet resultSet = preparedStatement.executeQuery();

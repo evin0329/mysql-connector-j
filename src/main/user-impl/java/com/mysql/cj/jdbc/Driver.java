@@ -32,22 +32,28 @@ package com.mysql.cj.jdbc;
 import java.sql.SQLException;
 
 /**
+ *
+ * Java SQL 框架允许使用多个数据库驱动程序。每个驱动程序都应该提供一个实现驱动程序接口的类
  * The Java SQL framework allows for multiple database drivers. Each driver should supply a class that implements the Driver interface
  * 
  * <p>
+ * DriverManager 将尝试加载尽可能多的驱动程序，然后对于任何给定的连接请求，它将依次要求每个驱动程序尝试连接到目标 URL。
  * The DriverManager will try to load as many drivers as it can find and then for any given connection request, it will ask each driver in turn to try to
  * connect to the target URL.
  * 
  * <p>
+ * 强烈建议每个 Driver 类应该是小而独立的，以便可以加载和查询 Driver 类，而不会引入大量支持代码。
  * It is strongly recommended that each Driver class should be small and standalone so that the Driver class can be loaded and queried without bringing in vast
  * quantities of supporting code.
  * 
  * <p>
+ * 当一个 Driver 类被加载时，它应该创建一个它自己的实例并将它注册到 DriverManager。这意味着用户可以通过 Class.forName("foo.bah.Driver") 加载和注册驱动程序
  * When a Driver class is loaded, it should create an instance of itself and register it with the DriverManager. This means that a user can load and register a
  * driver by doing Class.forName("foo.bah.Driver")
  */
 public class Driver extends NonRegisteringDriver implements java.sql.Driver {
     //
+    // 使用 DriverManager注册我们自己
     // Register ourselves with the DriverManager
     //
     static {
