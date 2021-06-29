@@ -198,6 +198,7 @@ public class NonRegisteringDriver implements java.sql.Driver {
             }
 
             ConnectionUrl conStr = ConnectionUrl.getConnectionUrlInstance(url, info);
+            // 根据连接类型返回连接实现类
             switch (conStr.getType()) {
                 case SINGLE_CONNECTION:
                     return com.mysql.cj.jdbc.ConnectionImpl.getInstance(conStr.getMainHost());

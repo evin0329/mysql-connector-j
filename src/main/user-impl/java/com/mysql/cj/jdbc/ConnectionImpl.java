@@ -450,6 +450,7 @@ public class ConnectionImpl implements JdbcConnection, SessionEventListener, Ser
         }
 
         try {
+            // 创建新的连接
             createNewIO(false);
 
             unSafeQueryInterceptors();

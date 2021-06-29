@@ -830,6 +830,9 @@ public class NativeProtocol extends AbstractProtocol<NativePacketPayload> implem
     }
 
     /**
+     *
+     * 从给定的字符串构建一个查询数据包并将其发送到服务器。
+     *
      * Build a query packet from the given string and send it to the server.
      * 
      * @param <T>
@@ -856,12 +859,14 @@ public class NativeProtocol extends AbstractProtocol<NativePacketPayload> implem
             ColumnDefinition cachedMetadata, ProtocolEntityFactory<T, NativePacketPayload> resultSetFactory) throws IOException {
         String statementComment = this.queryComment;
 
+        // 包含java 线程名作为语句注释
         if (this.propertySet.getBooleanProperty(PropertyKey.includeThreadNamesAsStatementComment).getValue()) {
             statementComment = (statementComment != null ? statementComment + ", " : "") + "java thread: " + Thread.currentThread().getName();
         }
 
         // We don't know exactly how many bytes we're going to get from the query. Since we're dealing with UTF-8, the max is 4, so pad it
         // (4 * query) + space for headers
+        // 我们不知道我们将从查询中获得多少字节。由于我们正在处理 UTF-8，因此最大值为 4，因此填充它为(4 * query)+ 标题空间
         int packLength = 1 + (query.length() * 4) + 2;
 
         byte[] commentAsBytes = null;
@@ -898,6 +903,8 @@ public class NativeProtocol extends AbstractProtocol<NativePacketPayload> implem
     }
 
     /**
+     *
+     * 将存储在数据包中的查询发送到服务器
      * Send a query stored in a packet to the server.
      * 
      * @param <T>
@@ -923,6 +930,7 @@ public class NativeProtocol extends AbstractProtocol<NativePacketPayload> implem
 
         final long queryStartTime = getCurrentTimeNanosOrMillis();
 
+        // 语句执行深度
         this.statementExecutionDepth++;
 
         byte[] queryBuf = queryPacket.getByteBuffer();
@@ -932,6 +940,7 @@ public class NativeProtocol extends AbstractProtocol<NativePacketPayload> implem
 
         try {
 
+            // 如果查询拦截器不为空，调用查询拦截器
             if (this.queryInterceptors != null) {
                 T interceptedResults = invokeQueryInterceptorsPre(query, callingQuery, false);
                 if (interceptedResults != null) {
@@ -939,6 +948,7 @@ public class NativeProtocol extends AbstractProtocol<NativePacketPayload> implem
                 }
             }
 
+            // 自动生成测试用例脚本
             if (this.autoGenerateTestcaseScript) {
                 StringBuilder debugBuf = new StringBuilder(query.length() + 32);
                 generateQueryCommentBlock(debugBuf);

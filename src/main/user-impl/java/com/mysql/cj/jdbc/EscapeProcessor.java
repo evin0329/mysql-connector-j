@@ -80,6 +80,8 @@ class EscapeProcessor {
     }
 
     /**
+     *
+     * 转义处理字符串
      * Escape process one string
      * 
      * @param sql
@@ -108,6 +110,7 @@ class EscapeProcessor {
         }
 
         /*
+         * 如果我们没有匹配的“{}”对，请短接此代码。 - 由瑞安·古斯塔法森 (Ryan Gustafason) 推荐
          * Short circuit this code if we don't have a matching pair of "{}". - Suggested by Ryan Gustafason
          */
         int beginBrace = sql.indexOf('{');

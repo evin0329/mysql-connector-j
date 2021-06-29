@@ -1058,6 +1058,7 @@ public class NativeSession extends CoreSession implements Serializable {
 
         this.lastQueryFinishedTime = 0; // we're busy!
 
+        // 是否需要ping
         if (this.autoReconnect.getValue() && (getServerSession().isAutoCommit() || this.autoReconnectForPools.getValue()) && this.needsPing && !isBatch) {
             try {
                 ping(false, 0);
