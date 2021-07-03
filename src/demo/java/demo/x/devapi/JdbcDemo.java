@@ -9,7 +9,7 @@ public class JdbcDemo {
 
         Class.forName("com.mysql.cj.jdbc.Driver");
 
-        Connection connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/test", "root", "123456");
+        Connection connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/test?profileSQL=true", "root", "123456");
 
         Statement statement = connection.createStatement();
         ResultSet resultSet1 = statement.executeQuery("select * from t_user where id =  " + "1 or 1=1");

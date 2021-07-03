@@ -1182,6 +1182,7 @@ public class StatementImpl implements JdbcStatement {
 
                 statementBegins();
 
+                // 执行sql
                 this.results = ((NativeSession) locallyScopedConn.getSession()).execSQL(this, sql, this.maxRows, null, createStreamingResultSet(),
                         getResultSetFactory(), cachedMetaData, false);
 

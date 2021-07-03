@@ -84,14 +84,19 @@ import com.mysql.cj.util.StringUtils;
 import com.mysql.cj.util.Util;
 
 /**
+ *
+ * SQL 语句经过预编译并存储在 PreparedStatement 对象中。然后可以使用此对象多次有效地执行此语句。
  * A SQL Statement is pre-compiled and stored in a PreparedStatement object. This object can then be used to efficiently execute this statement multiple times.
- * 
+ *
  * <p>
- * <B>Note:</B> The setXXX methods for setting IN parameter values must specify types that are compatible with the defined SQL type of the input parameter. For
+ * <B>Note:</B>
+ * 用于设置 IN 参数值的 setXXX 方法必须指定与输入参数的定义 SQL 类型兼容的类型。例如，如果 IN 参数的 SQL 类型为 Integer，则应使用 setInt。
+ * The setXXX methods for setting IN parameter values must specify types that are compatible with the defined SQL type of the input parameter. For
  * instance, if the IN parameter has SQL type Integer, then setInt should be used.
  * </p>
  * 
  * <p>
+ * 如果需要任意参数类型转换，则应将 setObject 方法与目标 SQL 类型一起使用。
  * If arbitrary parameter type conversions are required, then the setObject method should be used with a target SQL type.
  * </p>
  */

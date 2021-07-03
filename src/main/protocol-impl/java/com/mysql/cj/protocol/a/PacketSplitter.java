@@ -30,6 +30,7 @@
 package com.mysql.cj.protocol.a;
 
 /**
+ * 跟踪将大数据包拆分为多数据包段。
  * Keep track of splitting a large packet into multi-packets segments.
  */
 public class PacketSplitter {

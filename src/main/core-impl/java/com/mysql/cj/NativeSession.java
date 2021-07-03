@@ -1070,6 +1070,7 @@ public class NativeSession extends CoreSession implements Serializable {
         }
 
         try {
+            // 发送查询字符串
             return packet == null
                     ? ((NativeProtocol) this.protocol).sendQueryString(callingQuery, query, this.characterEncoding.getValue(), maxRows, streamResults,
                             cachedMetadata, resultSetFactory)

@@ -565,6 +565,7 @@ public class NativeProtocol extends AbstractProtocol<NativePacketPayload> implem
             }
 
             this.packetSequence++;
+            // 数据包发送者发送数据包
             this.packetSender.send(packet.getByteBuffer(), packetLen, this.packetSequence);
 
             //
@@ -592,6 +593,7 @@ public class NativeProtocol extends AbstractProtocol<NativePacketPayload> implem
             }
         }
 
+        // 重置消息序列
         this.packetReader.resetMessageSequence();
 
         int oldTimeout = 0;
@@ -608,9 +610,11 @@ public class NativeProtocol extends AbstractProtocol<NativePacketPayload> implem
 
         try {
 
+            // 检查未完成的流数据
             checkForOutstandingStreamingData();
 
             // Clear serverStatus...this value is guarded by an external mutex, as you can only ever be processing one command at a time
+            // 清除 serverStatus...此值由外部互斥锁保护，因为您一次只能处理一个命令
             this.serverSession.setStatusFlags(0, true);
             this.hadWarnings = false;
             this.setWarningCount(0);
@@ -811,6 +815,8 @@ public class NativeProtocol extends AbstractProtocol<NativePacketPayload> implem
 
             // Due to a bug in some older Linux kernels (fixed after the patch "tcp: fix FIONREAD/SIOCINQ"), our SocketInputStream.available() may return 1 even
             // if there is no data in the Stream, so, we need to check if InputStream.skip() actually skipped anything.
+            // 由于一些较旧的 Linux 内核中的错误（在补丁“tcp: fix FIONREADSIOCINQ”之后修复），即使 Stream 中没有数据，
+            // 我们的 SocketInputStream.available() 也可能返回 1，因此，我们需要检查 InputStream.available() 是否存在。 skip() 实际上跳过了任何东西。
             while ((len = this.socketConnection.getMysqlInput().available()) > 0 && this.socketConnection.getMysqlInput().skip(len) > 0) {
                 continue;
             }
@@ -958,6 +964,7 @@ public class NativeProtocol extends AbstractProtocol<NativePacketPayload> implem
             }
 
             // Send query command and sql query string
+            // 发送查询命令和sql查询字符串
             NativePacketPayload resultPacket = sendCommand(queryPacket, false, 0);
 
             final long queryEndTime = getCurrentTimeNanosOrMillis();
@@ -966,13 +973,16 @@ public class NativeProtocol extends AbstractProtocol<NativePacketPayload> implem
                 callingQuery.setExecuteTime(queryDuration);
             }
 
+            // 慢查询日志？
             boolean queryWasSlow = this.logSlowQueries && (this.useAutoSlowLog ? this.metricsHolder.checkAbonormallyLongQuery(queryDuration)
                     : queryDuration > this.propertySet.getIntegerProperty(PropertyKey.slowQueryThresholdMillis).getValue());
 
             long fetchBeginTime = this.profileSQL ? getCurrentTimeNanosOrMillis() : 0L;
 
+            // 读取所有结果集
             T rs = readAllResults(maxRows, streamResults, resultPacket, false, cachedMetadata, resultSetFactory);
 
+            // 慢查询？
             if (this.profileSQL || queryWasSlow) {
                 long fetchEndTime = this.profileSQL ? getCurrentTimeNanosOrMillis() : 0L;
 
@@ -1023,10 +1033,12 @@ public class NativeProtocol extends AbstractProtocol<NativePacketPayload> implem
                 }
             }
 
+            // 扫描并抛出数据截断
             if (this.hadWarnings) {
                 scanForAndThrowDataTruncation();
             }
 
+            // 调用查询拦截器
             if (this.queryInterceptors != null) {
                 rs = invokeQueryInterceptorsPost(query, callingQuery, rs, false);
             }
@@ -1662,8 +1674,10 @@ public class NativeProtocol extends AbstractProtocol<NativePacketPayload> implem
             ColumnDefinition metadata, ProtocolEntityFactory<T, NativePacketPayload> resultSetFactory) throws IOException {
 
         resultPacket.setPosition(0);
+        // 读取结果集
         T topLevelResultSet = read(Resultset.class, maxRows, streamResults, resultPacket, isBinaryEncoded, metadata, resultSetFactory);
 
+        // 是否还有更多结果集
         if (this.serverSession.hasMoreResults()) {
             T currentResultSet = topLevelResultSet;
             if (streamResults) {
@@ -1677,9 +1691,11 @@ public class NativeProtocol extends AbstractProtocol<NativePacketPayload> implem
         }
 
         if (this.hadWarnings) {
+            // 扫描并抛出数据截断
             scanForAndThrowDataTruncation();
         }
 
+        // 回收大型可重用数据包
         reclaimLargeReusablePacket();
         return topLevelResultSet;
     }

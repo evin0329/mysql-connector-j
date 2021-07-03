@@ -48,8 +48,11 @@ public class SimplePacketSender implements MessageSender<NativePacketPayload> {
     public void send(byte[] packet, int packetLen, byte packetSequence) throws IOException {
         PacketSplitter packetSplitter = new PacketSplitter(packetLen);
         while (packetSplitter.nextPacket()) {
+            // 数据包长度
             this.outputStream.write(NativeUtils.encodeMysqlThreeByteInteger(packetSplitter.getPacketLen()));
+            // 数据包序列
             this.outputStream.write(packetSequence++);
+            // 数据包
             this.outputStream.write(packet, packetSplitter.getOffset(), packetSplitter.getPacketLen());
         }
         this.outputStream.flush();
